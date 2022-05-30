@@ -1,0 +1,4 @@
+name = "rifapix"
+
+[database]
+url = "sqlite:///rifapix.db"
