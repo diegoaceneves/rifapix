@@ -5,12 +5,14 @@ from pydantic import BaseModel
 class UserOut(BaseModel):
     id: int
     user: str
+    name: str
     password: str
     email: str
     active: bool
 
 class UserIn(BaseModel):
     user: str
+    name: str
     password: str
     email: str
 

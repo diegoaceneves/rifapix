@@ -7,6 +7,7 @@ from sqlalchemy import UniqueConstraint, Column, String
 class User(SQLModel, table=True):
     id: Optional[int] = Field(primary_key=True, default=None, index=True)
     user: str = Field(sa_column=Column("user", String, unique=True))
+    name: str
     password: str
     email: str = Field(sa_column=Column("email", String, unique=True))
     active: Optional[bool] = Field(default=True)

@@ -3,6 +3,7 @@ from itertools import starmap
 from fastapi import FastAPI, Response, status
 from typing import List, Optional
 from sqlmodel import select
+from validate_email import validate_email
 
 from rifapix.core import get_users_from_database, get_rifas_from_database
 from rifapix.database import get_session
@@ -34,13 +35,15 @@ async def add_user(user_in: UserIn, response: Response):
     user = User(**user_in.dict())
     with get_session() as session:
         try:
-            session.add(user)
-            session.commit()
-            session.refresh(user)
-            response.status_code = status.HTTP_201_CREATED
+            if validate_email(email_address=user.email):
+                session.add(user)
+                session.commit()
+                session.refresh(user)
+                response.status_code = status.HTTP_201_CREATED
         except:
-            response.status_code = status.HTTP_400_BAD_REQUEST
-        return user
+                response.status_code = status.HTTP_400_BAD_REQUEST
+    return user
+        
 
 @api.delete("/users", response_model=UserOut)
 async def  delete_users(response: Response, id: Optional[int] = None):

@@ -3,3 +3,4 @@ fastapi
 dynaconf
 uvicorn
 pydantic
+py3-validate-email
