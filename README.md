@@ -17,6 +17,5 @@ uvicorn rifapix.api:api
   * correct status when try add a unique item twice or delete an nonexistent iten.
 
 * Validation
-  * E-Mail
   * Password
   * Pix Integration
