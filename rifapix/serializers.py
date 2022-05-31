@@ -1,8 +1,6 @@
 from datetime import datetime
-
 from fastapi import HTTPException, status
-from pydantic import BaseModel, validator
-
+from pydantic import BaseModel
 
 class UserOut(BaseModel):
     id: int
@@ -15,7 +13,6 @@ class UserIn(BaseModel):
     user: str
     password: str
     email: str
-    active: bool
 
 class RifaOut(BaseModel):
     id: int
@@ -28,7 +25,6 @@ class RifaOut(BaseModel):
     award: str
     date_start: datetime
     date_finish: datetime
-    active: bool
 
 class RifaIn(BaseModel):
     user_id: int
@@ -40,4 +36,3 @@ class RifaIn(BaseModel):
     award: str
     date_start: datetime
     date_finish: datetime
-    active: bool

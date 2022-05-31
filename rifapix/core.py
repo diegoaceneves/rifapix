@@ -1,27 +1,41 @@
 from datetime import datetime
 from itertools import starmap
 from typing import List, Optional
-from sqlmodel import select
+from sqlmodel import Session, select
+from fastapi import FastAPI, Response, status
+
 from rifapix.database import get_session
 from rifapix.models import User, Rifa, Number
 
-def add_user_to_database(
-    user: str,
-    password: str,
-    email: str,
-    active: bool
-) -> bool:
+def add_user_to_database(user: str, password: str, email: str) -> List[User]:
     with get_session() as session:
-        user = User(**locals())
-        session.add(user)
+        userx = User(**locals())
+        session.add(userx)
         session.commit()
-    return True
+        
+    return list(userx)
 
-def get_users_from_database() -> List[User]:
+
+def get_users_from_database(id: Optional[int] = None) -> List[User]:
     with get_session() as session:
         sql = select(User)
-        return list(session.exec(sql))    
+        if id:
+            sql = sql.where(User.id == id)
+        return list(session.exec(sql))
+        
 
+def del_users_from_database(id: Optional[int] = None) -> List[User]:
+    if id:
+        user=get_users_from_database(id=id)
+        if user:
+            with get_session() as session:
+                session.delete(user[0])
+                session.commit()
+                return user[0]
+    else:
+        return "[]"
+
+    
 def add_rifas_to_database(
     user_id: int,
     quantity: int,
@@ -31,39 +45,28 @@ def add_rifas_to_database(
     description: str,
     award: str,
     date_start: datetime,
-    date_finish: datetime,
-    active: bool   
-) -> bool:
+    date_finish: datetime
+)  -> List[Rifa]:
     with get_session() as session:
         rifa = Rifa(**locals())
         session.add(rifa)
         session.commit()
-    return True
+    return list(rifa)
 
-def get_rifas_from_database() -> List[Rifa]:
+def get_rifas_from_database(id: Optional[int] = None) -> List[Rifa]:
     with get_session() as session:
         sql = select(Rifa)
+        if id:
+            sql = sql.where(Rifa.id == id)
         return list(session.exec(sql))
-    
 
-def add_number_to_database(
-    rifa_id: int,
-    number: int,
-    description: str
-) -> bool:
-    with get_session() as session:
-        number = Number(**locals())
-        session.add(number)
-        session.commit()
-
-    return True
-
-
-
-
-# def get_beers_from_database(style: Optional[str] = None) -> List[Beer]:
-#     with get_session() as session:
-#         sql = select(Beer)
-#         if style:
-#             sql = sql.where(Beer.style == style)
-#         return list(session.exec(sql))
+def del_rifas_from_database(id: Optional[int] = None) -> List[Rifa]:
+    if id:
+        rifa=get_rifas_from_database(id=id)
+        if rifa:
+            with get_session() as session:
+                session.delete(rifa[0])
+                session.commit()
+                return rifa[0]
+    else:
+        return "[]"
